@@ -1,17 +1,22 @@
-'use client'
-import {signInWithPopup} from "firebase/auth"
-import {auth, provider} from "../firebase/config"
+"use client";
+import GoogleLoginButton from "./components/GoogleLoginButton";
+import { useAuth } from "./context/authContext";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-
-  const handleLogin = () => {
-    signInWithPopup(auth, provider)
+  const { currentUser, loading } = useAuth();
+  if (currentUser) {
+    redirect("/home");
   }
 
   return (
-    <main>
-    <h1>Hello World!</h1>
-    <button onClick={handleLogin} className="bg-red-300 px-2 py-2">Login with google</button>
-    </main>
-  )
+    <>
+      {!loading && (
+        <main>
+          <h1>Hello World!</h1>
+          <GoogleLoginButton />
+        </main>
+      )}
+    </>
+  );
 }
