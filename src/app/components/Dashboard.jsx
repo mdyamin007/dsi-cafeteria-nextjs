@@ -53,7 +53,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
                 <button className="border border-red-600 rounded text-red-600 px-4 py-4" onClick={handleLogout}>Log out</button>
                 <button className="rounded bg-red-400 px-4 py-4 inline-block text-white" onClick={handleClear}>Clear queue</button>
             </div>
-            <div className="flex md:flex-col flex-row">
+            <div className="flex flex-col items-center justify-center">
                 {occupantList && occupantList.map(occupant => (
                     <div className="mx-auto w-full md:w-1/2 my-2 border shadow-md px-3 py-4 classname flex flex-col gap-2 md:gap-0 md:flex-row items-center justify-around" key={occupant.uid}>
                         <Image src={occupant.photoURL} alt="User picture" width={50} height={50} className="rounded-full" />
