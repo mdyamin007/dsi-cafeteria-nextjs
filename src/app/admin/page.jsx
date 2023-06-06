@@ -12,6 +12,7 @@ const Admin = () => {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [occupantQueue, setOccupantQueue] = useState({});
+  const [error, setError] = useState('');
 
   //   console.log(occupantQueue);
   const { currentUser } = useAuth()
@@ -40,10 +41,14 @@ const Admin = () => {
     console.log(username);
     console.log(password);
     e.preventDefault();
-    if (username === "admin" && password === "dsi2001")
+    if (username === "admin" && password === "dsi2001") {
       setIsAuthenticated(true);
-    localStorage.setItem("adminUsername", username);
-    localStorage.setItem("adminPassword", password);
+      localStorage.setItem("adminUsername", username);
+      localStorage.setItem("adminPassword", password);
+      setError("")
+    } else {
+      setError("Invalid username or password");
+    }
   };
 
   return (
@@ -63,6 +68,7 @@ const Admin = () => {
                   </ion-icon>
                 </div> */}
               </div>
+              <p className="text-center text-red-600">{(error !== "") && error}</p>
               <form onSubmit={handleLogin}>
                 <div className="flex flex-col justify-center items-center mt-10 md:mt-4 space-y-6 md:space-y-8">
                   <div className="">
