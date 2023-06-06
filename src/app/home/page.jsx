@@ -5,7 +5,6 @@ import { useAuth } from "../context/authContext";
 import { database } from "@/firebase/config";
 import {
   equalTo,
-  get,
   onValue,
   orderByChild,
   push,
@@ -16,6 +15,7 @@ import {
 } from "firebase/database";
 import { useEffect, useState } from "react";
 import moment from "moment";
+import Image from "next/image";
 
 const Home = () => {
   const [totalOccupations, setTotalOccupations] = useState(0);
@@ -82,9 +82,10 @@ const Home = () => {
       const occupantsRef = ref(database, "occupants");
       const newOccupantRef = push(occupantsRef);
       let data = {
+        uid: currentUser.uid,
         name: currentUser.displayName,
         email: currentUser.email,
-        photo: currentUser.photoURL,
+        photoURL: currentUser.photoURL,
         timestamp: timestamp,
       };
       set(newOccupantRef, data);
@@ -96,51 +97,58 @@ const Home = () => {
       console.log("Checking out");
       const userRef = query(
         ref(database, "occupants"),
-        orderByChild("email"),
-        equalTo(currentUser.email)
+        orderByChild("uid"),
+        equalTo(currentUser.uid)
       );
-      remove(userRef);
+      onValue(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+          remove(ref(database, "occupants/" + Object.keys(snapshot.val())[0]))
+        }
+      }, { onlyOnce: true });
       setCheckedInTime("");
       setIsCheckedin(false);
     }
   };
 
   return (
-    <>
+    <div className="flex flex-col items-center justify-center">
       {checking ? (
         <p>Loading....</p>
       ) : (
-        <div className="min-h-screen flex flex-col items-center justify-center">
+        <div className="p-10">
           {loading ? (
             <p> Loading...</p>
           ) : (
-            <div>
-              <p className="my-2">Total occupancy: {totalOccupations}</p>
-              {checkedInTime !== "" && (
-                <p className="my-2">{elapsedTime} in Cafe!</p>
-              )}
+            <div className="flex justify-center flex-col items-center">
+              <p className="mt-10 mb-14 text-6xl">{totalOccupations}</p>
+
               {!isCheckedIn ? (
                 <button
-                  className="bg-green-400 px-2 py-2 text-white"
+                  className="bg-green-500 hover:bg-green-600 transition-transform transform ease-in-out hover:duration-400 text-2xl px-28 py-32 rounded-lg text-white"
                   onClick={handleCheckIn}
                 >
                   Check in
                 </button>
               ) : (
-                <button
-                  className="bg-red-400 px-2 py-2 text-white"
-                  onClick={handleCheckOut}
-                >
-                  {" "}
-                  Check out?
-                </button>
+                <>
+                  <button
+                    className="bg-red-500 hover:bg-red-600 transition-transform transform ease-in-out hover:duration-400 text-2xl px-24 py-32 rounded-lg text-white"
+                    onClick={handleCheckOut}
+                  >
+                    {" "}
+                    Check out?
+                  </button>
+                  {elapsedTime !== "Invalid date" && (
+                    <p className="mt-10 text-4xl">{elapsedTime} in Cafe!</p>
+                  )}
+                </>
               )}
-              <button onClick={logout}>Log out</button>
             </div>
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
