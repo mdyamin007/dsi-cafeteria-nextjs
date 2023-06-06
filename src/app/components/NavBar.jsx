@@ -12,7 +12,7 @@ const NavBar = () => {
                     <Image src="/dsi_logo.jpg" width="100" height="100" alt="DSI" />
                     <span className="ml-3 text-xl">Cafeteria</span>
                 </Link>
-                {currentUser && (<nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+                {currentUser && (<nav className="md:ml-auto md:mr-auto hidden md:flex flex-wrap items-center text-base justify-center">
                     <Link href="/queue" className="mr-5 hover:text-gray-900">Open queue</Link>
                 </nav>)}
 

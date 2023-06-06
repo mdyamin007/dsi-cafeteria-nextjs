@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import moment from "moment";
 import Image from "next/image";
+import Link from "next/link";
 
 const Home = () => {
   const [totalOccupations, setTotalOccupations] = useState(0);
@@ -144,6 +145,9 @@ const Home = () => {
                   )}
                 </>
               )}
+              {currentUser && (<nav className="mt-6 md:ml-auto md:mr-auto flex md:hidden flex-wrap items-center text-base justify-center">
+                <Link href="/queue" className="mr-5 hover:text-gray-900 text-blue-700">Open queue</Link>
+              </nav>)}
             </div>
           )}
         </div>

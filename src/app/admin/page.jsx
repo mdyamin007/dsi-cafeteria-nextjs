@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/authContext";
 import { redirect } from "next/navigation";
 import Dashboard from "../components/Dashboard";
+import Link from "next/link";
 
 const Admin = () => {
   const [username, setUsername] = useState("");
@@ -35,6 +36,7 @@ const Admin = () => {
   }, []);
 
   const handleLogin = (e) => {
+    e.preventDefault()
     console.log(username);
     console.log(password);
     e.preventDefault();
@@ -61,30 +63,35 @@ const Admin = () => {
                   </ion-icon>
                 </div> */}
               </div>
-              <div className="flex flex-col justify-center items-center mt-10 md:mt-4 space-y-6 md:space-y-8">
-                <div className="">
-                  <input type="text" placeholder="username"
-                    onChange={(e) => setUsername(e.target.value)}
-                    value={username}
-                    className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]" />
+              <form onSubmit={handleLogin}>
+                <div className="flex flex-col justify-center items-center mt-10 md:mt-4 space-y-6 md:space-y-8">
+                  <div className="">
+                    <input type="text" placeholder="username"
+                      onChange={(e) => setUsername(e.target.value)}
+                      value={username}
+                      className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]" />
+                  </div>
+                  <div className="">
+                    <input type="password" placeholder="Password"
+                      onChange={(e) => setPassword(e.target.value)}
+                      value={password}
+                      className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]" />
+                  </div>
+                  <div className="flex space-x-2 -ml-28 md:-ml-40  lg:-ml-52">
+                    <input className="" type="checkbox" id="checkbox" name="checkbox" />
+                    <h3 className="text-sm font-semibold text-gray-400 -mt-1 cursor-pointer">Remember Me</h3>
+                  </div>
                 </div>
-                <div className="">
-                  <input type="password" placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                    className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]" />
+                <div className="text-center mt-7">
+                  <button
+                    type="submit"
+                    className="uppercase px-24 py-2 rounded-md text-white bg-violet-500 hover:bg-violet-600 font-medium ">login</button>
                 </div>
-                <div className="flex space-x-2 -ml-28 md:-ml-40  lg:-ml-52">
-                  <input className="" type="checkbox" id="checkbox" name="checkbox" />
-                  <h3 className="text-sm font-semibold text-gray-400 -mt-1 cursor-pointer">Remember Me</h3>
-                </div>
-              </div>
-              <div className="text-center mt-7">
-                <button
-                  onClick={handleLogin}
-                  className="uppercase px-24 py-2 rounded-md text-white bg-violet-500 hover:bg-violet-600 font-medium ">login</button>
-              </div>
+              </form>
 
+              <div className="my-10 text-center">
+                <Link href="/" className=" text-blue-600">Back to home</Link>
+              </div>
             </div>
           </div>
 
