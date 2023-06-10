@@ -10,8 +10,12 @@ const NotificationPrompt = ({
   // request permission for push notification
   const handleNotificationPrompt = async () => {
     if (currentUser) {
-      connectWithPusher();
+      await connectWithPusher();
     }
+    setShowNotificationPrompt(false);
+  };
+
+  const handleSkipForNow = () => {
     setShowNotificationPrompt(false);
   };
 
@@ -25,8 +29,8 @@ const NotificationPrompt = ({
                 Turn on notifications
               </h1>
               <p className="text-gray-600">
-                Get the most out of Twitter by staying up to date with
-                what&apos;s happening.
+                Get the notification during launch time and when the lunch is
+                ready!
               </p>
             </div>
             <div className="space-y-4">
@@ -36,7 +40,10 @@ const NotificationPrompt = ({
               >
                 Allow notifications
               </button>
-              <button className="p-3 bg-white border rounded-full w-full font-semibold">
+              <button
+                onClick={handleSkipForNow}
+                className="p-3 bg-white border rounded-full w-full font-semibold"
+              >
                 Skip for now
               </button>
             </div>
