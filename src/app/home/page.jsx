@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
+import NotificationPrompt from "../components/NotificationPrompt";
+import * as PusherPushNotifications from "@pusher/push-notifications-web";
 
 const Home = () => {
   const [totalOccupations, setTotalOccupations] = useState(0);
@@ -24,9 +26,33 @@ const Home = () => {
   const [checking, setChecking] = useState(false);
   const [checkedInTime, setCheckedInTime] = useState("");
   const [elapsedTime, setElapsedTime] = useState("");
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+
   const { logout, currentUser, loading } = useAuth();
 
   // console.log(moment().format());
+
+  const connectWithPusher = () => {
+    if (currentUser) {
+      const beamsClient = new PusherPushNotifications.Client({
+        instanceId: process.env.NEXT_PUBLIC_PUSHER_BEAMS_INSTANCE_ID,
+      });
+
+      beamsClient
+        .start()
+        .then((beamsClient) => beamsClient.getDeviceId())
+        .then((deviceId) =>
+          console.log(
+            "Successfully registered with Beams. Device ID:",
+            deviceId
+          )
+        )
+        .then(() => beamsClient.addDeviceInterest("cafeteria"))
+        .then(() => beamsClient.getDeviceInterests())
+        .then((interests) => console.log("Current interests:", interests))
+        .catch(console.error);
+    }
+  };
 
   useEffect(() => {
     const getNumberOfOccupants = () => {
@@ -58,6 +84,20 @@ const Home = () => {
         setChecking(false);
       }
     };
+
+    const requestPermission = async () => {
+      if (currentUser) {
+        if (
+          Notification.permission === "default" ||
+          Notification.permission === "denied"
+        ) {
+          // connectWithPusher();
+          setShowNotificationPrompt(true);
+        }
+      }
+    };
+
+    requestPermission();
     checkCheckedInOrNot();
     getNumberOfOccupants();
   }, []);
@@ -101,16 +141,31 @@ const Home = () => {
         orderByChild("uid"),
         equalTo(currentUser.uid)
       );
-      onValue(userRef, (snapshot) => {
-        if (snapshot.exists()) {
-          console.log(snapshot.val());
-          remove(ref(database, "occupants/" + Object.keys(snapshot.val())[0]))
-        }
-      }, { onlyOnce: true });
+      onValue(
+        userRef,
+        (snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            remove(
+              ref(database, "occupants/" + Object.keys(snapshot.val())[0])
+            );
+          }
+        },
+        { onlyOnce: true }
+      );
       setCheckedInTime("");
       setIsCheckedin(false);
     }
   };
+
+  if (showNotificationPrompt) {
+    return (
+      <NotificationPrompt
+        setShowNotificationPrompt={setShowNotificationPrompt}
+        connectWithPusher={connectWithPusher}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -145,9 +200,16 @@ const Home = () => {
                   )}
                 </>
               )}
-              {currentUser && (<nav className="mt-6 md:ml-auto md:mr-auto flex md:hidden flex-wrap items-center text-base justify-center">
-                <Link href="/queue" className="mr-5 hover:text-gray-900 text-blue-700">Open queue</Link>
-              </nav>)}
+              {currentUser && (
+                <nav className="mt-6 md:ml-auto md:mr-auto flex md:hidden flex-wrap items-center text-base justify-center">
+                  <Link
+                    href="/queue"
+                    className="mr-5 hover:text-gray-900 text-blue-700"
+                  >
+                    Open queue
+                  </Link>
+                </nav>
+              )}
             </div>
           )}
         </div>
