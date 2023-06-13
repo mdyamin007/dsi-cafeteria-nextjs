@@ -1,15 +1,17 @@
 "use client";
-import { useAuth } from "../context/authContext";
+
+import { useSelector } from "react-redux";
 
 const NotificationPrompt = ({
   setShowNotificationPrompt,
   connectWithPusher,
 }) => {
-  const { currentUser } = useAuth();
+
+  const { user } = useSelector(state => state.auth)
 
   // request permission for push notification
   const handleNotificationPrompt = async () => {
-    if (currentUser) {
+    if (user) {
       await connectWithPusher();
     }
     setShowNotificationPrompt(false);

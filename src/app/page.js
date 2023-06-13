@@ -1,12 +1,18 @@
 "use client";
 import Link from "next/link";
 import GoogleLoginButton from "./components/GoogleLoginButton";
-import { useAuth } from "./context/authContext";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
+
+export const metadata = {
+  title: 'DSi Cafeteria',
+  description: 'DSi Cafeteria occupancy counter',
+}
 
 export default function App() {
-  const { currentUser, loading } = useAuth();
+  const { user, loading } = useSelector(state => state.auth)
+
 
   useEffect(() => {
     const adminUsername = localStorage.getItem("adminUsername");
@@ -14,7 +20,7 @@ export default function App() {
     if (adminUsername === "admin" && adminPassword === "dsi2001") redirect("/admin")
   }, []);
 
-  if (currentUser) {
+  if (user) {
     redirect("/home");
   }
 

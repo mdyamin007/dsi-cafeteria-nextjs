@@ -1,10 +1,14 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuth } from "../context/authContext";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../features/auth/authSlice";
 
 const NavBar = () => {
-  const { currentUser, logout } = useAuth();
+  const { user } = useSelector(state => state.auth)
+
+  const dispatch = useDispatch()
+
   return (
     <header className="text-gray-600 body-font border shadow-md">
       <div className="container mx-auto flex flex-wrap p-2 flex-col md:flex-row items-center justify-between">
@@ -15,7 +19,7 @@ const NavBar = () => {
           <Image src="/dsi_logo.jpg" width="100" height="100" alt="DSi" />
           <span className="ml-3 text-xl">Cafeteria</span>
         </Link>
-        {currentUser && (
+        {user && (
           <nav className="md:ml-auto md:mr-auto hidden md:flex flex-wrap items-center text-base justify-center">
             <Link href="/queue" className="mr-5 hover:text-gray-900">
               Open queue
@@ -23,17 +27,17 @@ const NavBar = () => {
           </nav>
         )}
 
-        {currentUser && (
+        {user && (
           <div className="flex gap-8">
             <Image
-              src={currentUser.photoURL}
+              src={user.photoURL}
               width="50"
               height="50"
               className="rounded-full"
               alt="user pic"
             />
             <button
-              onClick={logout}
+              onClick={() => dispatch(logout())}
               className="text-red-600 border-2 border-red-600 px-6 py-1 rounded"
             >
               Log out

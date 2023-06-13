@@ -2,10 +2,10 @@
 import { database } from "@/firebase/config";
 import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
-import { useAuth } from "../context/authContext";
 import { redirect } from "next/navigation";
 import Dashboard from "../components/Dashboard";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 const Admin = () => {
   const [username, setUsername] = useState("");
@@ -15,9 +15,9 @@ const Admin = () => {
   const [error, setError] = useState('');
 
   //   console.log(occupantQueue);
-  const { currentUser } = useAuth()
+  const { user } = useSelector(state => state.auth)
 
-  if (currentUser) {
+  if (user) {
     redirect('/home')
   }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { useAuth } from "../context/authContext";
 import { database } from "@/firebase/config";
 import {
   equalTo,
@@ -19,6 +18,7 @@ import Image from "next/image";
 import Link from "next/link";
 import NotificationPrompt from "../components/NotificationPrompt";
 import * as PusherPushNotifications from "@pusher/push-notifications-web";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const [totalOccupations, setTotalOccupations] = useState(0);
@@ -28,12 +28,13 @@ const Home = () => {
   const [elapsedTime, setElapsedTime] = useState("");
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
 
-  const { logout, currentUser, loading } = useAuth();
+  // const { logout, currentUser, loading } = useAuth();
+  const { logout, user, loading } = useSelector(state => state.auth)
 
   // console.log(moment().format());
 
   const connectWithPusher = () => {
-    if (currentUser) {
+    if (user) {
       const beamsClient = new PusherPushNotifications.Client({
         instanceId: process.env.NEXT_PUBLIC_PUSHER_BEAMS_INSTANCE_ID,
       });
@@ -66,11 +67,11 @@ const Home = () => {
     };
     const checkCheckedInOrNot = async () => {
       setChecking(true);
-      if (currentUser) {
+      if (user) {
         const userRef = query(
           ref(database, "occupants"),
           orderByChild("email"),
-          equalTo(currentUser.email)
+          equalTo(user.email)
         );
         onValue(userRef, (snapshot) => {
           const data = snapshot.val();
@@ -86,7 +87,7 @@ const Home = () => {
     };
 
     const requestPermission = async () => {
-      if (currentUser) {
+      if (user) {
         if (
           Notification.permission === "default" ||
           Notification.permission === "denied"
@@ -112,21 +113,21 @@ const Home = () => {
     return () => clearInterval(interval); // Clean up the interval on unmount
   }, [checkedInTime]);
 
-  if (!currentUser) {
+  if (!user) {
     redirect("/");
   }
 
   const handleCheckIn = () => {
-    if (currentUser) {
+    if (user) {
       const timestamp = moment().format();
       // console.log(timestamp);
       const occupantsRef = ref(database, "occupants");
       const newOccupantRef = push(occupantsRef);
       let data = {
-        uid: currentUser.uid,
-        name: currentUser.displayName,
-        email: currentUser.email,
-        photoURL: currentUser.photoURL,
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
         timestamp: timestamp,
       };
       set(newOccupantRef, data);
@@ -134,12 +135,12 @@ const Home = () => {
   };
 
   const handleCheckOut = () => {
-    if (currentUser) {
+    if (user) {
       console.log("Checking out");
       const userRef = query(
         ref(database, "occupants"),
         orderByChild("uid"),
-        equalTo(currentUser.uid)
+        equalTo(user.uid)
       );
       onValue(
         userRef,
@@ -200,7 +201,7 @@ const Home = () => {
                   )}
                 </>
               )}
-              {currentUser && (
+              {user && (
                 <nav className="mt-6 md:ml-auto md:mr-auto flex md:hidden flex-wrap items-center text-base justify-center">
                   <Link
                     href="/queue"

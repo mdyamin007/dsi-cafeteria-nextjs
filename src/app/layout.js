@@ -1,7 +1,9 @@
+"use client"
+import { Provider } from 'react-redux'
 import NavBar from './components/NavBar'
-import { AuthProvider } from './context/authContext'
 import './globals.css'
 import { Inter } from 'next/font/google'
+import store from './store'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,13 +14,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <AuthProvider>
+    <Provider store={store}>
       <html lang="en">
         <body className={inter.className}>
           <NavBar />
           {children}
         </body>
       </html>
-    </AuthProvider>
+    </Provider>
   )
 }

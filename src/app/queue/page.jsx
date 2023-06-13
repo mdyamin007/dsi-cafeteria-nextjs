@@ -1,17 +1,17 @@
 "use client"
 import { redirect } from "next/navigation";
-import { useAuth } from "../context/authContext";
 import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
 import { database } from "@/firebase/config";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
 const Queue = () => {
     const [occupantList, setOccupantList] = useState(null)
 
-    const { currentUser } = useAuth()
+    const { user } = useSelector(state => state.auth)
 
     useEffect(() => {
         const occupantsRef = ref(database, "occupants");
@@ -25,7 +25,7 @@ const Queue = () => {
         })
     }, [])
 
-    if (!currentUser) {
+    if (!user) {
         redirect("/");
     }
 
