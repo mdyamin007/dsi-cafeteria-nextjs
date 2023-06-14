@@ -16,7 +16,7 @@ const Card = ({ occupant }) => {
     // console.log(timeElapsed);
 
     return (
-        <div className={"w-full my-2 border shadow-md px-3 py-4 classname flex flex-col gap-2 md:gap-0 md:flex-row items-center justify-around " + (timeElapsed > 30 ? "border-red-600" : "")}>
+        <div className={"w-full my-2 border shadow-md px-3 py-4 classname flex flex-col gap-2 md:gap-0 md:flex-row items-center justify-around " + (timeElapsed > 15 ? "border-red-600" : "")}>
             <Image src={occupant.photoURL} alt="User picture" width={50} height={50} className="rounded-full" />
             <p>{occupant.name}</p>
             <p>{moment(occupant.timestamp).fromNow(true)}</p>
