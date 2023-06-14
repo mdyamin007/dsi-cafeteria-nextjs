@@ -5,11 +5,6 @@ import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
-export const metadata = {
-  title: 'DSi Cafeteria',
-  description: 'DSi Cafeteria occupancy counter',
-}
-
 export default function App() {
   const { user, loading } = useSelector(state => state.auth)
 
