@@ -4,7 +4,7 @@ import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/authContext";
 import { redirect } from "next/navigation";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../components/admin/Dashboard";
 import Link from "next/link";
 
 const Admin = () => {

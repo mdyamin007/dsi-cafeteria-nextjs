@@ -19,7 +19,11 @@ const Queue = () => {
             const data = snapshot.val();
             // console.log(Object.keys(snapshot.val()).length);
             if (data) {
-                setOccupantList(Object.values(data))
+                setOccupantList(Object.values(data).sort((a, b) => {
+                    const timeA = moment(a.timestamp);
+                    const timeB = moment(b.timestamp);
+                    return timeA.diff(timeB);
+                }))
             }
             else setOccupantList(null)
         })
