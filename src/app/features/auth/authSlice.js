@@ -3,7 +3,7 @@ import { auth, provider } from "@/firebase/config";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { signInWithPopup, signOut } from "firebase/auth";
 
-const user = typeof window !== "undefined" ? JSON.parse(String(localStorage.getItem("user"))) : null;
+const user = JSON.parse(String(localStorage.getItem("user")));
 
 const initialState = {
     loading: false,
